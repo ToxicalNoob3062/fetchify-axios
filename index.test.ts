@@ -35,7 +35,7 @@ describe("fetchAdapter", () => {
       await client.get("/potato");
     } catch (err) {
       //expect the error message to be "Network Error"
-      expect((err as AxiosError).message).toBe("Network Error");
+      expect((err as AxiosError).message).toBe("Not Found");
     }
   });
 });

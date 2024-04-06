@@ -1,9 +1,13 @@
 {
   "name": "fetchixos",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "main": "index.js",
   "module": "index.js",
   "types": "index.ts",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/ToxicalNoob3062/fetchixos.git"
+  },
   "devDependencies": {
     "@types/bun": "latest",
     "axios": "^1.6.8",

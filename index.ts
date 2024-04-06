@@ -14,29 +14,54 @@ export default function (fetch: fetch): AxiosAdapter {
   return async (config: InternalAxiosRequestConfig): AxiosPromise => {
     const url = (config.baseURL ? config.baseURL : "") + config.url;
     if (!url) {
-      throw new AxiosError("No url specified");
+      throw new AxiosError("no url specified!");
     }
+
+    //to store the headers from Headers object
+    let headers: { [key: string]: string } = {};
+
+    //let request object
+    const requestOptions: RequestInit = {
+      method: config.method,
+      headers: config.headers,
+      body: config.data,
+    };
+
+    const request = new Request(url, requestOptions);
+
     //fetch the data
-    let response;
+    let response: Response;
     try {
-      response = await fetch(url, {
-        method: config.method,
-        headers: config.headers,
-        body: config.data,
+      response = await fetch(request);
+
+      response.headers.forEach((value, name) => {
+        headers[name] = value;
       });
+
+      //if response is not ok, throw an error
+      if (!response.ok) {
+        throw new AxiosError(
+          response.statusText,
+          response.status + "",
+          config,
+          request,
+          {
+            data: await response.text(),
+            status: response.status,
+            statusText: response.statusText,
+            headers: headers,
+            config,
+            request,
+          }
+        );
+      }
     } catch (err) {
       throw new AxiosError((err as Error).message);
     }
 
-    //convert Headers object to plain object
-    const headersObj: { [key: string]: string } = {};
-    response.headers.forEach((value, name) => {
-      headersObj[name] = value;
-    });
-
     //parse the response
     let data;
-    const contentType = headersObj["content-type"];
+    const contentType = headers["content-type"];
     if (contentType && contentType.includes("application/json")) {
       data = await response.json();
     } else {
@@ -48,14 +73,9 @@ export default function (fetch: fetch): AxiosAdapter {
       data,
       status: response.status,
       statusText: response.statusText,
-      headers: headersObj,
+      headers: headers,
       config,
-      request: {
-        url: url,
-        method: config.method,
-        headers: config.headers,
-        body: config.data,
-      },
+      request,
     };
 
     //return the response
