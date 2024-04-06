@@ -1,0 +1,21 @@
+{
+  "name": "fetchixos",
+  "version": "1.0.0",
+  "main": "index.js",
+  "module": "index.js",
+  "types": "index.ts",
+  "devDependencies": {
+    "@types/bun": "latest",
+    "axios": "^1.6.8",
+    "bun-fetch": "^0.0.1"
+  },
+  "peerDependencies": {
+    "typescript": "^5.0.0"
+  },
+  "scripts": {
+    "build": "bun build ./index.ts --outfile=index.js --target=node --format=esm --minify",
+    "test": "bun test",
+    "compile": "bun run test && bun run build"
+  },
+  "type": "module"
+}
