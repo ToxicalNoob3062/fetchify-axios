@@ -38,4 +38,20 @@ describe("fetchAdapter", () => {
       expect((err as AxiosError).message).toBe("Not Found");
     }
   });
+
+  //test post request
+  test("post request", async () => {
+    //make the request
+    const res = await client.post("/users/add", {
+      firstName: "John",
+      lastName: "Doet",
+      age: 25,
+    });
+
+    console.log(res.data);
+
+    expect(res.status).toBeGreaterThanOrEqual(200);
+    expect(res.status).toBeLessThan(300);
+    expect(res.headers["content-type"]).toContain("application/json");
+  });
 });

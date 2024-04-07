@@ -32,7 +32,7 @@ export default function (fetch: fetch): AxiosAdapter {
     //fetch the data
     let response: Response;
     try {
-      response = await fetch(request);
+      response = await fetch(url, requestOptions);
 
       response.headers.forEach((value, name) => {
         headers[name] = value;
