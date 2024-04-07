@@ -12,9 +12,14 @@ export type fetch = typeof fetch;
 export default function (fetch: fetch): AxiosAdapter {
   //return the adapter using that fetch implementation
   return async (config: InternalAxiosRequestConfig): AxiosPromise => {
+    //get the url from the config
     const url = (config.baseURL ? config.baseURL : "") + config.url;
     if (!url) {
-      throw new AxiosError("no url specified!");
+      throw new AxiosError(
+        "no url specified. @fetchAdapter",
+        "777 (FETCH_ERROR)",
+        config
+      );
     }
 
     //to store the headers from Headers object
@@ -27,6 +32,7 @@ export default function (fetch: fetch): AxiosAdapter {
       body: config.data,
     };
 
+    //create the request object to refer
     const request = new Request(url, requestOptions);
 
     //fetch the data
@@ -40,23 +46,34 @@ export default function (fetch: fetch): AxiosAdapter {
 
       //if response is not ok, throw an error
       if (!response.ok) {
-        throw new AxiosError(
-          response.statusText,
-          response.status + "",
+        const responseObj: AxiosResponse = {
+          data: await response.text(),
+          status: response.status,
+          statusText: response.statusText,
+          headers: headers,
           config,
           request,
-          {
-            data: await response.text(),
-            status: response.status,
-            statusText: response.statusText,
-            headers: headers,
-            config,
-            request,
-          }
+        };
+        throw new AxiosError(
+          `Request failed with status code ${response.status}`,
+          response.status.toString(),
+          config,
+          request,
+          responseObj
         );
       }
     } catch (err) {
-      throw new AxiosError((err as Error).message);
+      if (err instanceof AxiosError) throw err;
+
+      //if the error is not something we can handle, throw a generic error
+      throw new AxiosError(
+        "an error occurred while making the request.\n" +
+          (err as Error).message +
+          "\n@fetchAdapter",
+        "777 (FETCH_ERROR)",
+        config,
+        request
+      );
     }
 
     //parse the response

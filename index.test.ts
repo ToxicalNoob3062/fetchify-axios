@@ -34,8 +34,12 @@ describe("fetchAdapter", () => {
     try {
       await client.get("/potato");
     } catch (err) {
-      //expect the error message to be "Network Error"
-      expect((err as AxiosError).message).toBe("Not Found");
+      if (err instanceof AxiosError) {
+        //expect status to be 404
+        expect(err.response).toBeDefined();
+        expect(err.response?.status).toBe(404);
+        expect(err.response?.statusText).toBe("Not Found");
+      }
     }
   });
 
@@ -47,8 +51,6 @@ describe("fetchAdapter", () => {
       lastName: "Doet",
       age: 25,
     });
-
-    console.log(res.data);
 
     expect(res.status).toBeGreaterThanOrEqual(200);
     expect(res.status).toBeLessThan(300);
