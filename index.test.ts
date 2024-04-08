@@ -56,4 +56,20 @@ describe("fetchAdapter", () => {
     expect(res.status).toBeLessThan(300);
     expect(res.headers["content-type"]).toContain("application/json");
   });
+
+  //test to check query params
+  test("query params", async () => {
+    //make the request
+    const res = await client.get("/users/search", {
+      params: {
+        q: "John",
+      },
+    });
+
+    console.log(res.data);
+
+    expect(res.status).toBeGreaterThanOrEqual(200);
+    expect(res.status).toBeLessThan(300);
+    expect(res.headers["content-type"]).toContain("application/json");
+  });
 });

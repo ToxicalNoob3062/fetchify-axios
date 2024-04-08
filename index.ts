@@ -13,7 +13,12 @@ export default function (fetch: fetch): AxiosAdapter {
   //return the adapter using that fetch implementation
   return async (config: InternalAxiosRequestConfig): AxiosPromise => {
     //get the url from the config
-    const url = (config.baseURL ? config.baseURL : "") + config.url;
+    let url = (config.baseURL ? config.baseURL : "") + config.url;
+    //append params to the url if they exist
+    if (config.params) {
+      const params = new URLSearchParams(config.params).toString();
+      url += "?" + params;
+    }
     if (!url) {
       throw new AxiosError(
         "no url specified. @fetchAdapter",
@@ -67,9 +72,9 @@ export default function (fetch: fetch): AxiosAdapter {
 
       //if the error is not something we can handle, throw a generic error
       throw new AxiosError(
-        "an error occurred while making the request.\n" +
-          (err as Error).message +
-          "\n@fetchAdapter",
+        "an error occurred while making the request.(" +
+          err +
+          ") @fetchAdapter",
         "777 (FETCH_ERROR)",
         config,
         request
