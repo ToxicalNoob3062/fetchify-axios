@@ -1,13 +1,16 @@
 {
   "name": "fetchify-axios",
   "description": "Fetchify Axios is a fetch adapter for Axios that takes any function that implements the standard fetchAPI interface!",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "main": "index.js",
   "module": "index.js",
   "types": "index.ts",
   "repository": {
     "type": "git",
     "url": "https://github.com/ToxicalNoob3062/fetchify-axios.git"
+  },
+  "dependencies": {
+    "fetch-parse": "^1.1.0"
   },
   "devDependencies": {
     "@types/bun": "latest",

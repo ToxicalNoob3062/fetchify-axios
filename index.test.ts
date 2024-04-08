@@ -65,9 +65,6 @@ describe("fetchAdapter", () => {
         q: "John",
       },
     });
-
-    console.log(res.data);
-
     expect(res.status).toBeGreaterThanOrEqual(200);
     expect(res.status).toBeLessThan(300);
     expect(res.headers["content-type"]).toContain("application/json");

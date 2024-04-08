@@ -1,29 +1,37 @@
+import fetchParse from "fetch-parse";
 import {
   AxiosError,
   type AxiosAdapter,
   type AxiosPromise,
+  type AxiosRequestHeaders,
   type AxiosResponse,
   type InternalAxiosRequestConfig,
 } from "axios";
+("");
 
 export type fetch = typeof fetch;
 
+function purifyHeaders(headers: AxiosRequestHeaders): Record<string, string> {
+  const headersObj: Record<string, string> = {};
+  for (const key in headers) {
+    if (headers[key] !== undefined) {
+      headersObj[key] = headers[key];
+    }
+  }
+  return headersObj;
+}
+
 // Axios adapter that can take any fetch implementation
 export default function (fetch: fetch): AxiosAdapter {
+  fetch = fetchParse(fetch);
   //return the adapter using that fetch implementation
   return async (config: InternalAxiosRequestConfig): AxiosPromise => {
     //get the url from the config
-    let url = (config.baseURL ? config.baseURL : "") + config.url;
+    const url = new URL(config.url!, config.baseURL);
     //append params to the url if they exist
     if (config.params) {
-      const params = new URLSearchParams(config.params).toString();
-      url += "?" + params;
-    }
-    if (!url) {
-      throw new AxiosError(
-        "no url specified. @fetchAdapter",
-        "777 (FETCH_ERROR)",
-        config
+      Object.keys(config.params).forEach((key) =>
+        url.searchParams.append(key, config.params[key])
       );
     }
 
@@ -33,17 +41,23 @@ export default function (fetch: fetch): AxiosAdapter {
     //let request object
     const requestOptions: RequestInit = {
       method: config.method,
-      headers: config.headers,
-      body: config.data,
+      body: config.data == undefined ? null : config.data,
+      headers: purifyHeaders(config.headers),
+      credentials: config.withCredentials ? "include" : "same-origin",
     };
 
     //create the request object to refer
-    const request = new Request(url, requestOptions);
+    const request = new Request(url.toString(), requestOptions);
 
     //fetch the data
     let response: Response;
     try {
-      response = await fetch(url, requestOptions);
+      response = (await Promise.race([
+        fetch(url.toString(), requestOptions),
+        new Promise((_, reject) =>
+          setTimeout(() => reject(new Error("timeout")), 5000)
+        ),
+      ])) as Response;
 
       response.headers.forEach((value, name) => {
         headers[name] = value;
@@ -52,7 +66,7 @@ export default function (fetch: fetch): AxiosAdapter {
       //if response is not ok, throw an error
       if (!response.ok) {
         const responseObj: AxiosResponse = {
-          data: await response.text(),
+          data: response.body,
           status: response.status,
           statusText: response.statusText,
           headers: headers,
@@ -72,27 +86,18 @@ export default function (fetch: fetch): AxiosAdapter {
 
       //if the error is not something we can handle, throw a generic error
       throw new AxiosError(
-        "an error occurred while making the request.(" +
-          err +
-          ") @fetchAdapter",
+        `An error occurred while making the request. Error: ${
+          (err as Error).message
+        }`,
         "777 (FETCH_ERROR)",
         config,
         request
       );
     }
 
-    //parse the response
-    let data;
-    const contentType = headers["content-type"];
-    if (contentType && contentType.includes("application/json")) {
-      data = await response.json();
-    } else {
-      data = await response.text();
-    }
-
     //create the AxiosResponse object
     const axiosRes: AxiosResponse = {
-      data,
+      data: response.body,
       status: response.status,
       statusText: response.statusText,
       headers: headers,

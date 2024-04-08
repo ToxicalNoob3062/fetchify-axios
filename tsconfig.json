@@ -20,5 +20,5 @@
     "noFallthroughCasesInSwitch": true,
     "forceConsistentCasingInFileNames": true
   },
-  "include": ["index.ts"]
+  "include": ["index.ts", "fetch-parse.d.ts"]
 }
