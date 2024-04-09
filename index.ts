@@ -59,9 +59,9 @@ export default function (fetch: fetch): AxiosAdapter {
         ),
       ])) as Response;
 
-      response.headers.forEach((value, name) => {
-        headers[name] = value;
-      });
+      for (let key of response.headers.keys()) {
+        headers[key] = response.headers.get(key)!;
+      }
 
       //if response is not ok, throw an error
       if (!response.ok) {
