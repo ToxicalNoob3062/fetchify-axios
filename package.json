@@ -1,7 +1,7 @@
 {
   "name": "fetchify-axios",
   "description": "Fetchify Axios is a fetch adapter for Axios that takes any function that implements the standard fetchAPI interface!",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "main": "index.js",
   "module": "index.js",
   "types": "index.ts",
