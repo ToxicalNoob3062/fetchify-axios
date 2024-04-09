@@ -7,6 +7,17 @@ This package provides an Axios adapter for any custom fetch function that implem
 This adapter was primarily build to work with http-plugin of tauri v2 via axios but
 also capable to handle any type of function that implements fetch interface!
 
+# Don't forget to enable this feature flags
+
+```cargo.toml
+tauri-plugin-http = { version = "2.0.0-beta", features = ["rustls-tls","unsafe-headers"] }
+```
+
+# Limitations
+
+- this is still in beta stage and improving
+- cookie features are in progress
+
 ## Installation
 
 ```bash
