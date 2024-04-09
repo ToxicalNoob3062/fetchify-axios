@@ -1,13 +1,13 @@
 {
   "name": "fetchify-axios",
   "description": "Fetchify Axios is a fetch adapter for Axios that takes any function that implements the standard fetchAPI interface!",
-  "version": "1.0.5",
+  "version": "1.0.4",
   "main": "index.js",
   "module": "index.js",
   "types": "index.ts",
   "repository": {
     "type": "git",
-    "url": "https://github.com/ToxicalNoob3062/fetchify-axios.git"
+    "url": "git+https://github.com/ToxicalNoob3062/fetchify-axios.git"
   },
   "dependencies": {
     "fetch-parse": "^1.1.0"
@@ -23,7 +23,9 @@
     "build": "bun build ./index.ts --outfile=index.js --format=esm --minify",
     "test": "bun test",
     "compile": "bun run test && bun run build",
-    "deploy": "bun run compile && npm publish --access public"
+    "deploy:patch": "bun run compile && npm version patch && npm publish --access public",
+    "deploy:minor": "bun run compile && npm version minor && npm publish --access public",
+    "deploy:major": "bun run compile && npm version major && npm publish --access public"
   },
   "type": "module",
   "license": "MIT",
