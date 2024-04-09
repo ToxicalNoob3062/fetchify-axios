@@ -16,7 +16,7 @@ tauri-plugin-http = { version = "2.0.0-beta", features = ["rustls-tls","unsafe-h
 # Limitations
 
 - this is still in beta stage and improving
-- cookie features are in progress
+- cookie features are in progress (@tauri)
 
 ## Installation
 
