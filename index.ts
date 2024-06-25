@@ -9,7 +9,10 @@ import {
 } from "axios";
 ("");
 
-export type fetch = typeof fetch;
+export type fetch = (
+  input: URL | Request | string,
+  init?: RequestInit
+) => Promise<Response>;
 
 function purifyHeaders(headers: AxiosRequestHeaders): Record<string, string> {
   const headersObj: Record<string, string> = {};

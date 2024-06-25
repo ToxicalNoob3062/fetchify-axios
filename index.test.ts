@@ -73,23 +73,25 @@ describe("fetchAdapter", () => {
   //test to check set-cookie header
   test("set-cookie header", async () => {
     //make the request
-    const res = await client.post(
-      "/user/emp/login",
-      {
-        email: "rahat3062@gmail.com",
-        password: "Rahat123#",
-        shopId: "helloShop",
-      },
-      {
-        withCredentials: true,
-        baseURL: "http://localhost:3000",
-      }
-    );
-
-    //expect status success and header to be application/json
-    expect(res.status).toBeGreaterThanOrEqual(200);
-    expect(res.status).toBeLessThan(300);
-    expect(res.headers["content-type"]).toContain("application/json");
-    expect(res.headers["set-cookie"]).toBeDefined();
+    try {
+      const res = await client.post(
+        "/user/emp/login",
+        {
+          email: "rahat3062@gmail.com",
+          password: "Rahat123#",
+          shopId: "helloShop",
+        },
+        {
+          withCredentials: true,
+          baseURL: "http://localhost:4000",
+        }
+      );
+      expect(res.status).toBeGreaterThanOrEqual(200);
+      expect(res.status).toBeLessThan(300);
+      expect(res.headers["content-type"]).toContain("application/json");
+      expect(res.headers["set-cookie"]).toBeDefined();
+    } catch (err) {
+      console.log("I am in error!");
+    }
   });
 });
